@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html><head><title>Login</title><link rel="stylesheet" href="style.css"></head><body>
+<div class="container">
+<h2>Role Login Lab</h2>
+<h3>Register</h3>
+<input id="r-name" placeholder="Name">
+<input id="r-email" placeholder="Email">
+<input id="r-pass" type="password" placeholder="Password">
+<select id="r-role"><option value="user">user</option><option value="staff">staff</option><option value="admin">admin</option></select>
+<button onclick="register()">Register</button>
+<hr>
+<h3>Login</h3>
+<input id="l-email" placeholder="Email">
+<input id="l-pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="msg"></p>
+</div>
+<script>
+async function register(){
+ const body={name:document.getElementById('r-name').value,email:document.getElementById('r-email').value,password:document.getElementById('r-pass').value,role:document.getElementById('r-role').value};
+ const res=await fetch('/api/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ const txt=await res.text(); document.getElementById('msg').innerText=txt;
+}
+async function login(){
+ const res=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('l-email').value,password:document.getElementById('l-pass').value})});
+ const data=await res.json(); 
+ if(res.ok){ localStorage.setItem('user',JSON.stringify(data.user)); location.href=data.redirectTo; }
+ else document.getElementById('msg').innerText=data.error;
+}
+</script></body></html>

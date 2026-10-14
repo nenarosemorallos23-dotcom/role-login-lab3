@@ -1,0 +1,9 @@
+<!DOCTYPE html><html><head><title>Admin</title><link rel="stylesheet" href="style.css"></head><body>
+<div class="container"><h2>Admin Dashboard</h2><p id="welcome"></p><div id="users"></div><br><button onclick="logout()">Logout</button></div>
+<script>
+const u=JSON.parse(localStorage.getItem('user')); if(!u||u.role!=='admin') location.href='/login.html';
+document.getElementById('welcome').innerText='Welcome: '+u.name;
+async function load(){ const r=await fetch('/api/users'); const users=await r.json(); document.getElementById('users').innerHTML=users.map(x=>`<p>${x.name} (${x.role}) - ${x.email} <button onclick="del(${x.id})" style="width:auto;background:red">Del</button></p>`).join('');}
+async function del(id){ await fetch('/api/users/'+id,{method:'DELETE'}); load(); }
+function logout(){ localStorage.clear(); location.href='/login.html'; } load();
+</script></body></html>
